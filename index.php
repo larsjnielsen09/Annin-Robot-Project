@@ -49,8 +49,45 @@ if ($pending_tasks_count === false) {
 // For now, these will be placeholders as project/task logic is not yet implemented
 // $active_projects_count = 0; // Placeholder This line is now handled by the code above
 // $pending_tasks_count = 0;   // Placeholder This line is now handled by the code above
-$total_hours_today = 0;    // Placeholder
-$total_hours_week = 0;     // Placeholder
+
+// Get total hours logged today by the user
+$today_date = date('Y-m-d');
+$stmt_hours_today = $pdo->prepare("
+    SELECT SUM(hours_spent) 
+    FROM time_entries 
+    WHERE user_id = :user_id 
+    AND DATE(start_time) = :today_date
+");
+$stmt_hours_today->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$stmt_hours_today->bindParam(':today_date', $today_date, PDO::PARAM_STR);
+$stmt_hours_today->execute();
+$total_hours_today = $stmt_hours_today->fetchColumn();
+if ($total_hours_today === false || $total_hours_today === null) {
+    $total_hours_today = 0;
+}
+$total_hours_today = (float)$total_hours_today; // Cast to float
+
+// Get total hours logged this week by the user
+// Define 'this week' as from current week's Monday to current week's Sunday.
+$today_day_of_week = date('N'); // 1 (for Monday) through 7 (for Sunday)
+$start_of_week = date('Y-m-d', strtotime("-" . ($today_day_of_week - 1) . " days"));
+$end_of_week = date('Y-m-d', strtotime("+" . (7 - $today_day_of_week) . " days"));
+
+$stmt_hours_week = $pdo->prepare("
+    SELECT SUM(hours_spent) 
+    FROM time_entries 
+    WHERE user_id = :user_id 
+    AND DATE(start_time) BETWEEN :start_of_week AND :end_of_week
+");
+$stmt_hours_week->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$stmt_hours_week->bindParam(':start_of_week', $start_of_week, PDO::PARAM_STR);
+$stmt_hours_week->bindParam(':end_of_week', $end_of_week, PDO::PARAM_STR);
+$stmt_hours_week->execute();
+$total_hours_week = $stmt_hours_week->fetchColumn();
+if ($total_hours_week === false || $total_hours_week === null) {
+    $total_hours_week = 0;
+}
+$total_hours_week = (float)$total_hours_week; // Cast to float
 
 ?>
 
