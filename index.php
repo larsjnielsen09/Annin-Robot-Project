@@ -10,23 +10,45 @@ $username = $_SESSION['username'];
 // Fetch some data for the dashboard (examples)
 $pdo = get_db_connection();
 
-// Example: Get count of active projects for the user
-// This assumes 'projects' table has 'created_by_user_id' and 'status'
-// $stmt_projects = $pdo->prepare("SELECT COUNT(*) as active_projects FROM projects WHERE created_by_user_id = :user_id AND status = 'active'");
-// $stmt_projects->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-// $stmt_projects->execute();
-// $active_projects_count = $stmt_projects->fetchColumn();
+// Get count of active projects for the user
+// Active projects are those with status 'active' or 'pending'.
+$stmt_active_projects = $pdo->prepare("
+    SELECT COUNT(*) 
+    FROM projects 
+    WHERE created_by_user_id = :user_id 
+    AND (status = 'active' OR status = 'pending')
+");
+$stmt_active_projects->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$stmt_active_projects->execute();
+$active_projects_count = $stmt_active_projects->fetchColumn();
+if ($active_projects_count === false) { // Handle case where query might fail or return no rows in a way that fetchColumn gives false
+    $active_projects_count = 0;
+}
 
-// Example: Get count of tasks assigned to the user that are not 'completed'
-// This assumes 'tasks' table has 'assigned_to_user_id' and 'status'
-// $stmt_tasks = $pdo->prepare("SELECT COUNT(*) as pending_tasks FROM tasks WHERE assigned_to_user_id = :user_id AND status != 'completed'");
-// $stmt_tasks->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-// $stmt_tasks->execute();
-// $pending_tasks_count = $stmt_tasks->fetchColumn();
+// Get count of pending tasks for the user
+// Pending tasks are those not 'completed' or 'cancelled'.
+// Tasks are relevant if assigned to user, created by user, or in a project created by the user.
+$stmt_pending_tasks = $pdo->prepare("
+    SELECT COUNT(DISTINCT t.id) 
+    FROM tasks t
+    LEFT JOIN projects p ON t.project_id = p.id
+    WHERE 
+        (t.assigned_to_user_id = :user_id OR t.created_by_user_id = :user_id_created_task OR p.created_by_user_id = :user_id_project_owner)
+    AND 
+        (t.status NOT IN ('completed', 'cancelled'))
+");
+$stmt_pending_tasks->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$stmt_pending_tasks->bindParam(':user_id_created_task', $user_id, PDO::PARAM_INT);
+$stmt_pending_tasks->bindParam(':user_id_project_owner', $user_id, PDO::PARAM_INT);
+$stmt_pending_tasks->execute();
+$pending_tasks_count = $stmt_pending_tasks->fetchColumn();
+if ($pending_tasks_count === false) {
+    $pending_tasks_count = 0;
+}
 
 // For now, these will be placeholders as project/task logic is not yet implemented
-$active_projects_count = 0; // Placeholder
-$pending_tasks_count = 0;   // Placeholder
+// $active_projects_count = 0; // Placeholder This line is now handled by the code above
+// $pending_tasks_count = 0;   // Placeholder This line is now handled by the code above
 $total_hours_today = 0;    // Placeholder
 $total_hours_week = 0;     // Placeholder
 
@@ -103,14 +125,17 @@ $total_hours_week = 0;     // Placeholder
                                 <select class="form-select" id="project_id" name="project_id">
                                     <option value="">Select Project</option>
                                     <?php
-                                    // Placeholder for project list - will be populated later
-                                    // Example:
-                                    // $stmt_user_projects = $pdo->prepare("SELECT id, name FROM projects WHERE created_by_user_id = :user_id ORDER BY name ASC");
-                                    // $stmt_user_projects->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-                                    // $stmt_user_projects->execute();
-                                    // while ($project = $stmt_user_projects->fetch(PDO::FETCH_ASSOC)) {
-                                    //    echo "<option value="" . htmlspecialchars($project['id']) . "">" . htmlspecialchars($project['name']) . "</option>";
-                                    // }
+                                    // Fetch projects for the dropdown (user's projects)
+                                    $stmt_user_projects_dropdown = $pdo->prepare("SELECT id, name FROM projects WHERE created_by_user_id = :user_id ORDER BY name ASC");
+                                    $stmt_user_projects_dropdown->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                                    $stmt_user_projects_dropdown->execute();
+                                    $user_projects_for_dropdown = $stmt_user_projects_dropdown->fetchAll(PDO::FETCH_ASSOC);
+
+                                    if ($user_projects_for_dropdown) {
+                                        foreach ($user_projects_for_dropdown as $project_dd_item) {
+                                            echo "<option value=\"" . htmlspecialchars($project_dd_item['id']) . "\">" . htmlspecialchars($project_dd_item['name']) . "</option>";
+                                        }
+                                    }
                                     ?>
                                 </select>
                             </div>
