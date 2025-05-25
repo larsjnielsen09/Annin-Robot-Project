@@ -112,8 +112,8 @@ try {
 
             $stmt->bindParam(':task_id', $task_id, PDO::PARAM_INT);
             $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-            $stmt->bindParam(':start_time', $start_time->format('Y-m-d H:i:s'));
-            $stmt->bindParam(':end_time', $end_time ? $end_time->format('Y-m-d H:i:s') : null, $end_time ? PDO::PARAM_STR : PDO::PARAM_NULL);
+            $stmt->bindValue(':start_time', $start_time->format('Y-m-d H:i:s'));
+            $stmt->bindValue(':end_time', $end_time ? $end_time->format('Y-m-d H:i:s') : null, $end_time ? PDO::PARAM_STR : PDO::PARAM_NULL);
             $stmt->bindParam(':hours_spent', $hours_spent, $hours_spent !== null ? PDO::PARAM_STR : PDO::PARAM_NULL); // Stored as DECIMAL(10,2)
             $stmt->bindParam(':notes', $notes);
             $stmt->execute();
