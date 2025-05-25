@@ -204,8 +204,62 @@ $total_hours_week = (float)$total_hours_week; // Cast to float
             <div class="card">
                 <div class="card-header">Recently Active Tasks</div>
                 <div class="card-body">
-                    <p class="text-muted">Task activity will be shown here.</p>
-                    <!-- List of tasks or activity feed -->
+                    <?php
+                    // Fetch Recently Active Tasks
+                    // Tasks assigned to current user OR created by current user,
+                    // not 'completed' or 'cancelled'.
+                    // Order by due_date (NULLs last, then ascending), then by created_at (descending).
+                    // Limit to 5.
+                    $stmt_recent_tasks = $pdo->prepare("
+                        SELECT 
+                            t.id as task_id, 
+                            t.name as task_name, 
+                            t.due_date, 
+                            p.name as project_name,
+                            p.id as project_id -- Added for link
+                        FROM tasks t
+                        LEFT JOIN projects p ON t.project_id = p.id
+                        WHERE 
+                            (t.assigned_to_user_id = :user_id OR t.created_by_user_id = :user_id_creator)
+                        AND 
+                            (t.status NOT IN ('completed', 'cancelled'))
+                        ORDER BY 
+                            CASE WHEN t.due_date IS NULL THEN 1 ELSE 0 END, t.due_date ASC, t.created_at DESC
+                        LIMIT 5
+                    ");
+                    $stmt_recent_tasks->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                    $stmt_recent_tasks->bindParam(':user_id_creator', $user_id, PDO::PARAM_INT);
+                    $stmt_recent_tasks->execute();
+                    $recent_tasks = $stmt_recent_tasks->fetchAll(PDO::FETCH_ASSOC);
+
+                    if (count($recent_tasks) > 0):
+                    ?>
+                        <ul class="list-group list-group-flush">
+                            <?php foreach ($recent_tasks as $r_task): ?>
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">
+                                            <a href="<?php echo BASE_URL . 'tasks.php' . ($r_task['project_id'] ? '?project_id=' . htmlspecialchars($r_task['project_id']) : ''); ?>">
+                                                <?php echo htmlspecialchars($r_task['task_name']); ?>
+                                            </a>
+                                        </h6>
+                                        <small class="text-muted">
+                                            <?php if ($r_task['due_date']): ?>
+                                                Due: <?php echo date("M j, Y", strtotime($r_task['due_date'])); ?>
+                                            <?php endif; ?>
+                                        </small>
+                                    </div>
+                                    <?php if ($r_task['project_name']): ?>
+                                        <p class="mb-1 text-muted small">
+                                            Project: <?php echo htmlspecialchars($r_task['project_name']); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="text-muted">No recently active tasks.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -213,8 +267,89 @@ $total_hours_week = (float)$total_hours_week; // Cast to float
             <div class="card">
                 <div class="card-header">Notifications / Reminders</div>
                 <div class="card-body">
-                    <p class="text-muted">Important updates will appear here.</p>
-                    <!-- Notifications list -->
+                    <?php
+                    // Fetch Notifications / Reminders
+                    // Tasks assigned to the user that are overdue, due today, or due tomorrow,
+                    // and not 'completed' or 'cancelled'.
+                    // Limit to 5, ordered by due date.
+
+                    $today_iso = date('Y-m-d');
+                    $tomorrow_iso = date('Y-m-d', strtotime('+1 day'));
+
+                    // Using unique placeholders for each comparison
+                    $stmt_reminders = $pdo->prepare("
+                        SELECT 
+                            t.id as task_id, 
+                            t.name as task_name, 
+                            t.due_date,
+                            p.id as project_id,
+                            p.name as project_name,
+                            CASE
+                                WHEN t.due_date < :case_today_iso1 THEN 'OVERDUE'
+                                WHEN t.due_date = :case_today_iso2 THEN 'Due Today'
+                                WHEN t.due_date = :case_tomorrow_iso THEN 'Due Tomorrow'
+                                ELSE 'Upcoming' 
+                            END as urgency_status
+                        FROM tasks t
+                        LEFT JOIN projects p ON t.project_id = p.id
+                        WHERE 
+                            t.assigned_to_user_id = :user_id
+                        AND 
+                            (t.status NOT IN ('completed', 'cancelled'))
+                        AND
+                            (t.due_date < :where_today_iso1 OR t.due_date = :where_today_iso2 OR t.due_date = :where_tomorrow_iso) 
+                        ORDER BY t.due_date ASC
+                        LIMIT 5
+                    ");
+
+                    // No bindParam calls for these specific placeholders
+
+                    $stmt_reminders->execute([
+                        ':user_id' => $user_id,
+                        ':case_today_iso1' => $today_iso,
+                        ':case_today_iso2' => $today_iso,
+                        ':case_tomorrow_iso' => $tomorrow_iso,
+                        ':where_today_iso1' => $today_iso,
+                        ':where_today_iso2' => $today_iso,
+                        ':where_tomorrow_iso' => $tomorrow_iso
+                    ]);
+                    $reminder_tasks = $stmt_reminders->fetchAll(PDO::FETCH_ASSOC);
+
+                    if (count($reminder_tasks) > 0):
+                    ?>
+                        <ul class="list-group list-group-flush">
+                            <?php foreach ($reminder_tasks as $r_task): ?>
+                                <li class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">
+                                            <a href="<?php echo BASE_URL . 'tasks.php' . ($r_task['project_id'] ? '?project_id=' . htmlspecialchars($r_task['project_id']) : ''); ?>">
+                                                <?php echo htmlspecialchars($r_task['task_name']); ?>
+                                            </a>
+                                        </h6>
+                                        <small>
+                                            <?php
+                                            $urgency_class = 'text-muted'; // Default
+                                            if ($r_task['urgency_status'] === 'OVERDUE') $urgency_class = 'text-danger fw-bold';
+                                            if ($r_task['urgency_status'] === 'Due Today') $urgency_class = 'text-warning fw-bold';
+                                            if ($r_task['urgency_status'] === 'Due Tomorrow') $urgency_class = 'text-info';
+                                            ?>
+                                            <span class="<?php echo $urgency_class; ?>"><?php echo htmlspecialchars($r_task['urgency_status']); ?></span>
+                                            <?php if ($r_task['due_date']): ?>
+                                                (<?php echo date("M j", strtotime($r_task['due_date'])); ?>)
+                                            <?php endif; ?>
+                                        </small>
+                                    </div>
+                                    <?php if ($r_task['project_name']): ?>
+                                        <p class="mb-1 text-muted small">
+                                            Project: <?php echo htmlspecialchars($r_task['project_name']); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="text-muted">No urgent reminders or upcoming deadlines.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
