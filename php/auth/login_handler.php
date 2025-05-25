@@ -17,28 +17,34 @@ if (empty($username_or_email) || empty($password)) {
 $pdo = get_db_connection();
 
 try {
-    $stmt = $pdo->prepare("SELECT id, username, password_hash FROM users WHERE username = :username_or_email OR email = :username_or_email LIMIT 1");
-    $stmt->bindParam(':username_or_email', $username_or_email);
-    $stmt->execute();
+    // Use two distinct named placeholders: :uname for username, :uemail for email
+    $stmt = $pdo->prepare("SELECT id, username, password_hash FROM users WHERE username = :uname OR email = :uemail LIMIT 1");
+
+    // Execute by passing an associative array with keys matching the new placeholders.
+    // The same input value ($username_or_email) is used for both.
+    $stmt->execute([':uname' => $username_or_email, ':uemail' => $username_or_email]);
+
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
-        // Password is correct, start session
+        // Login success logic (session start, regenerate ID, set session variables, flash message, redirect)
         if (session_status() == PHP_SESSION_NONE) {
-            session_start(); // Ensure session is started before regenerating ID
+            session_start();
         }
-        session_regenerate_id(true); // Regenerate session ID for security
+        session_regenerate_id(true);
 
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
 
         set_flash_message('Login successful! Welcome back, ' . htmlspecialchars($user['username']) . '.', 'success');
-        redirect(BASE_URL . 'index.php'); // Redirect to dashboard or main page
+        redirect(BASE_URL . 'index.php');
     } else {
+        // Login failure logic (flash message, redirect)
         set_flash_message('Invalid username/email or password.', 'danger');
         redirect(BASE_URL . 'login.php');
     }
 } catch (PDOException $e) {
+    // Error handling logic (log error, flash message, redirect)
     error_log("Login Error: " . $e->getMessage());
     set_flash_message('An error occurred during login. Please try again later.', 'danger');
     redirect(BASE_URL . 'login.php');

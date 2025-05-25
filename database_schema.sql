@@ -38,8 +38,10 @@ CREATE TABLE tasks (
     due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     assigned_to_user_id INT,
+    created_by_user_id INT NULL DEFAULT NULL, -- Added this line
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-    FOREIGN KEY (assigned_to_user_id) REFERENCES users(id) ON DELETE SET NULL
+    FOREIGN KEY (assigned_to_user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL -- Added this line
 );
 
 CREATE TABLE time_entries (

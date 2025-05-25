@@ -25,7 +25,14 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'add' || $action === 'edit' || $action === 'quick_add') {
             $task_id = ($action === 'edit') ? (int)($_GET['task_id'] ?? $_POST['task_id'] ?? 0) : null;
-            $name = sanitize_string($_POST['name']);
+            // $is_quick_add is defined near the top of the file:
+            // $is_quick_add = ($action === 'quick_add');
+
+            if ($is_quick_add) {
+                $name = sanitize_string($_POST['task_name'] ?? '');
+            } else {
+                $name = sanitize_string($_POST['name'] ?? '');
+            }
             $description = sanitize_string($_POST['description'] ?? '');
             $status = sanitize_string($_POST['status'] ?? 'todo');
             $due_date = !empty($_POST['due_date']) ? sanitize_string($_POST['due_date']) : null;
