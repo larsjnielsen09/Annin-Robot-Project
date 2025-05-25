@@ -64,3 +64,228 @@ footer.bg-light {
     padding: 20px 0;
     margin-top: 40px;
 }
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212; /* Very dark gray, common for dark themes */
+    color: #e0e0e0; /* Light gray text */
+}
+
+.dark-mode .container {
+    background-color: #1e1e1e; /* Slightly lighter dark gray for content areas */
+    border-color: #333;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.dark-mode .card {
+    background-color: #2a2a2a; /* Darker card background */
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+.dark-mode .card-header {
+    background-color: #333333;
+    border-bottom: 1px solid #444;
+    color: #f5f5f5;
+}
+
+.dark-mode .card-footer {
+    background-color: #333333;
+    border-top: 1px solid #444;
+}
+
+.dark-mode .table {
+    color: #e0e0e0; /* Light text for table content */
+    border-color: #444;
+}
+
+.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05); /* Subtle striping for dark mode */
+}
+.dark-mode .table-striped tbody tr:nth-of-type(even) {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+
+.dark-mode .table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #f5f5f5;
+}
+
+.dark-mode thead th {
+    border-bottom-width: 2px; /* Keep header separation clear */
+    border-color: #555;
+}
+
+.dark-mode tfoot th, .dark-mode tfoot td {
+    border-top-color: #555;
+}
+
+.dark-mode .form-control {
+    background-color: #333;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+.dark-mode .form-control:focus {
+    background-color: #444;
+    color: #f5f5f5;
+    border-color: #007bff; /* Bootstrap primary blue for focus, or a lighter blue */
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Or a lightened version */
+}
+
+.dark-mode .form-select {
+    background-color: #333;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+.dark-mode .form-select:focus {
+     border-color: #007bff;
+     box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+
+.dark-mode .btn-primary {
+    background-color: #007bff; /* Standard primary blue */
+    border-color: #007bff;
+    color: #fff; /* Ensure text is white */
+}
+.dark-mode .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.dark-mode .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+.dark-mode .btn-secondary:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+}
+
+/* Specific button overrides if needed, e.g., outline buttons */
+.dark-mode .btn-outline-primary {
+    color: #0d6efd; /* Bootstrap primary */
+    border-color: #0d6efd;
+}
+.dark-mode .btn-outline-primary:hover {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+.dark-mode .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+.dark-mode .btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+/* Add for other outline buttons (danger, info, success) if used extensively */
+.dark-mode .btn-outline-danger { color: #dc3545; border-color: #dc3545; }
+.dark-mode .btn-outline-danger:hover { color: #fff; background-color: #dc3545; border-color: #dc3545; }
+.dark-mode .btn-outline-info { color: #0dcaf0; border-color: #0dcaf0; }
+.dark-mode .btn-outline-info:hover { color: #000; background-color: #0dcaf0; border-color: #0dcaf0; }
+.dark-mode .btn-outline-success { color: #198754; border-color: #198754; }
+.dark-mode .btn-outline-success:hover { color: #fff; background-color: #198754; border-color: #198754; }
+
+
+.dark-mode .navbar-dark { /* Assuming existing navbar is .navbar-dark .bg-dark */
+    background-color: #212529 !important; /* Keep dark navbar, or make it slightly different if needed */
+    border-bottom: 1px solid #444;
+}
+.dark-mode .navbar-light { /* If you were to use a light navbar that needs to go dark */
+    background-color: #2a2a2a !important;
+    border-bottom: 1px solid #444;
+    color: #e0e0e0;
+}
+.dark-mode .navbar-light .navbar-brand,
+.dark-mode .navbar-light .nav-link,
+.dark-mode .navbar-light .navbar-toggler-icon {
+    color: #e0e0e0;
+}
+.dark-mode .navbar-light .nav-link:hover,
+.dark-mode .navbar-light .nav-link:focus {
+    color: #fff;
+}
+
+
+.dark-mode .alert-info {
+    color: #052c65;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+}
+/* Add more alert type overrides if needed (success, danger, warning) */
+.dark-mode .alert-success { color: #0a3622; background-color: #d1e7dd; border-color: #badbcc;}
+.dark-mode .alert-warning { color: #664d03; background-color: #fff3cd; border-color: #ffecb5;}
+.dark-mode .alert-danger { color: #58151c; background-color: #f8d7da; border-color: #f5c2c7;}
+
+
+.dark-mode a {
+    color: #6caeff; /* Lighter blue for links in dark mode */
+}
+.dark-mode a:hover {
+    color: #8ecaff;
+}
+
+.dark-mode .modal-content {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+}
+.dark-mode .modal-header {
+    border-bottom-color: #444;
+}
+.dark-mode .modal-footer {
+    border-top-color: #444;
+}
+.dark-mode .btn-close { /* For closing modals */
+    filter: invert(1) grayscale(100%) brightness(200%); /* Makes white close button */
+}
+
+.dark-mode .text-muted {
+    color: #adb5bd !important; /* Bootstrap's default dark-theme text-muted */
+}
+
+.dark-mode .bg-light { /* For elements that used .bg-light like footer */
+    background-color: #212529 !important; /* Dark background */
+    color: #e0e0e0;
+}
+
+.dark-mode .badge.bg-secondary {
+    color: #fff;
+    background-color: #545b62 !important; /* Darker badge */
+}
+.dark-mode .badge.bg-info { /* Assuming text-dark was used for contrast */
+    color: #000 !important; /* Keep dark text on light blue badge */
+    background-color: #3dd5f3 !important;
+}
+/* Add other badge overrides if needed */
+
+/* Dark Mode Toggle Styling in Navbar */
+body.dark-mode .navbar-dark .form-check-label, 
+body.dark-mode .navbar-light .form-check-label { /* If navbar becomes light in dark mode */
+    color: #e0e0e0; /* Light label text for dark mode */
+}
+
+.navbar-dark .form-check-label { /* Default for dark navbar */
+    color: rgba(255,255,255,.55); /* Match Bootstrap's .nav-link color */
+}
+.navbar-light .form-check-label { /* Default for light navbar */
+    color: rgba(0,0,0,.55);
+}
+
+/* Ensure switch is visible on different navbar backgrounds */
+.form-check-input:not(:checked) {
+    background-color: #ccc; /* Lighter grey for unchecked switch background */
+    border-color: #bbb;
+}
+body.dark-mode .form-check-input:not(:checked) {
+    background-color: #555; 
+    border-color: #666;
+}
+/* Bootstrap handles checked state color with accent-color or specific classes */

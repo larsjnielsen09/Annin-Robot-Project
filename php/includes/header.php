@@ -26,6 +26,13 @@ require_once __DIR__ . '/../core/config.php'; // Adjusted path
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                    <li class="nav-item d-flex align-items-center me-3"> <!-- me-3 for spacing -->
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch" title="Toggle Dark Mode">
+                            <!-- A label can be added here if desired, e.g., an icon or text -->
+                            <!-- <label class="form-check-label" for="darkModeSwitch">🌙</label> -->
+                        </div>
+                    </li>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>index.php">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>customers.php">Customers</a></li>

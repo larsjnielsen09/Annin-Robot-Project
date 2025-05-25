@@ -109,4 +109,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     */
+
+    // Dark Mode Toggle Logic
+    const darkModeSwitch = document.getElementById('darkModeSwitch');
+    const body = document.body;
+    // const darkModeLabel = document.getElementById('darkModeLabel'); // Optional: if you have a label to update
+
+    // Function to apply the theme based on preference
+    const applyTheme = (theme) => {
+        if (theme === 'dark') {
+            body.classList.add('dark-mode');
+            if (darkModeSwitch) darkModeSwitch.checked = true;
+            // if (darkModeLabel) darkModeLabel.textContent = 'Light Mode'; // Or an icon
+        } else {
+            body.classList.remove('dark-mode');
+            if (darkModeSwitch) darkModeSwitch.checked = false;
+            // if (darkModeLabel) darkModeLabel.textContent = 'Dark Mode'; // Or an icon
+        }
+    };
+
+    // Check localStorage for saved theme preference on page load
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    } else {
+        // Optional: Check for system preference if no user preference is saved
+        // if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        //     applyTheme('dark');
+        //     localStorage.setItem('theme', 'dark'); // Optionally save system preference as user's first preference
+        // } else {
+        //     applyTheme('light'); // Default to light if no preference
+        // }
+        applyTheme('light'); // Default to light theme if nothing is saved
+    }
+
+    // Event listener for the toggle switch
+    if (darkModeSwitch) {
+        darkModeSwitch.addEventListener('change', function() {
+            if (this.checked) {
+                applyTheme('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                applyTheme('light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+    // End Dark Mode Toggle Logic
 });
