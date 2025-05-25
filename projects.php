@@ -36,10 +36,11 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div id="projectList">
     <?php if (count($projects) > 0): ?>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
                 <th>Customer</th>
                 <th>Status</th>
                 <th>Created At</th>
@@ -75,6 +76,7 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
     <?php else: ?>
     <div class="alert alert-info">No projects found. <a href="#" data-bs-toggle="modal" data-bs-target="#projectModal" hx-get="<?php echo BASE_URL; ?>templates/project_form.php?action=add" hx-target="#projectFormContainer" hx-swap="innerHTML">Add one now!</a></div>
     <?php endif; ?>

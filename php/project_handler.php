@@ -132,6 +132,7 @@ try {
 
         // Outputting the new project list HTML
         if (count($projects) > 0) {
+            echo '<div class="table-responsive">';
             echo '<table class="table table-striped table-hover">';
             echo '<thead><tr><th>Name</th><th>Customer</th><th>Status</th><th>Created At</th><th class="text-end">Actions</th></tr></thead><tbody>';
             foreach ($projects as $project) {
@@ -147,6 +148,7 @@ try {
                 echo "</td></tr>";
             }
             echo '</tbody></table>';
+            echo '</div>'; // Closing table-responsive
         } else {
             echo '<div class="alert alert-info">No projects found. <a href="#" data-bs-toggle="modal" data-bs-target="#projectModal" hx-get="' . BASE_URL . 'templates/project_form.php?action=add" hx-target="#projectFormContainer" hx-swap="innerHTML">Add one now!</a></div>';
         }

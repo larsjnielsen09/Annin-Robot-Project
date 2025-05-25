@@ -134,10 +134,11 @@ if($filter_task_id){
 
 <div id="timeEntryList">
     <?php if (count($time_entries) > 0): ?>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Task</th>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Task</th>
                 <th>Project</th>
                 <th>Start Time</th>
                 <th>End Time</th>
@@ -187,6 +188,7 @@ if($filter_task_id){
             </tr>
         </tfoot>
     </table>
+    </div>
     <?php else: ?>
     <div class="alert alert-info">No time entries found matching your criteria. <a href="#" data-bs-toggle="modal" data-bs-target="#timeEntryModal" hx-get="<?php echo BASE_URL; ?>templates/time_entry_form.php?action=add<?php echo $filter_task_id ? '&task_id=' . $filter_task_id : ''; ?>" hx-target="#timeEntryFormContainer" hx-swap="innerHTML">Add one now!</a></div>
     <?php endif; ?>

@@ -201,6 +201,7 @@ try {
         $time_entries = $stmt_list->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($time_entries) > 0) {
+            echo '<div class="table-responsive">';
             echo '<table class="table table-striped table-hover">';
             echo '<thead><tr><th>Task</th><th>Project</th><th>Start Time</th><th>End Time</th><th>Hours Spent</th><th>Notes</th><th class="text-end">Actions</th></tr></thead><tbody>';
             $total_hours_filtered = 0;
@@ -224,6 +225,7 @@ try {
                 echo "</td></tr>";
             }
             echo '</tbody><tfoot><tr><th colspan="4" class="text-end">Total Hours (Filtered):</th><th>'.number_format($total_hours_filtered, 2).'</th><td colspan="2"></td></tr></tfoot></table>';
+            echo '</div>'; // Closing table-responsive
         } else {
             $add_link_params = $origin_task_id ? '&task_id=' . $origin_task_id : '';
             // Add other origin filters to the "Add one now" link if desired

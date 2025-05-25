@@ -30,10 +30,11 @@ $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div id="customerList">
     <?php if (count($customers) > 0): ?>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th class="text-end">Actions</th>
@@ -66,6 +67,7 @@ $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
     <?php else: ?>
     <div class="alert alert-info">No customers found. <a href="#" data-bs-toggle="modal" data-bs-target="#customerModal" hx-get="<?php echo BASE_URL; ?>templates/customer_form.php?action=add" hx-target="#customerFormContainer" hx-swap="innerHTML">Add one now!</a></div>
     <?php endif; ?>

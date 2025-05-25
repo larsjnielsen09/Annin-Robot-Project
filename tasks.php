@@ -99,10 +99,11 @@ $task_statuses = ['todo', 'in progress', 'on hold', 'testing', 'completed', 'can
 
 <div id="taskList">
     <?php if (count($tasks) > 0): ?>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
                 <th>Project</th>
                 <th>Assigned To</th>
                 <th>Status</th>
@@ -141,6 +142,7 @@ $task_statuses = ['todo', 'in progress', 'on hold', 'testing', 'completed', 'can
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
     <?php else: ?>
     <div class="alert alert-info">No tasks found matching your criteria. <a href="#" data-bs-toggle="modal" data-bs-target="#taskModal" hx-get="<?php echo BASE_URL; ?>templates/task_form.php?action=add<?php echo $filter_project_id ? '&project_id=' . $filter_project_id : ''; ?>" hx-target="#taskFormContainer" hx-swap="innerHTML">Add one now!</a></div>
     <?php endif; ?>

@@ -145,6 +145,7 @@ try {
 
         // Outputting the new customer list HTML
         if (count($customers) > 0) {
+            echo '<div class="table-responsive">';
             echo '<table class="table table-striped table-hover">';
             echo '<thead><tr><th>Name</th><th>Email</th><th>Phone</th><th class="text-end">Actions</th></tr></thead><tbody>';
             foreach ($customers as $customer) {
@@ -158,6 +159,7 @@ try {
                 echo "</td></tr>";
             }
             echo '</tbody></table>';
+            echo '</div>'; // Closing table-responsive
         } else {
             echo '<div class="alert alert-info">No customers found. <a href="#" data-bs-toggle="modal" data-bs-target="#customerModal" hx-get="' . BASE_URL . 'templates/customer_form.php?action=add" hx-target="#customerFormContainer" hx-swap="innerHTML">Add one now!</a></div>';
         }

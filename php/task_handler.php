@@ -201,6 +201,7 @@ try {
         $tasks = $stmt_list->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($tasks) > 0) {
+            echo '<div class="table-responsive">';
             echo '<table class="table table-striped table-hover">';
             echo '<thead><tr><th>Name</th><th>Project</th><th>Assigned To</th><th>Status</th><th>Due Date</th><th class="text-end">Actions</th></tr></thead><tbody>';
             foreach ($tasks as $task_item) {
@@ -225,6 +226,7 @@ try {
                 echo "</td></tr>";
             }
             echo '</tbody></table>';
+            echo '</div>'; // Closing table-responsive
         } else {
              $add_link_params = $origin_project_id ? '&project_id=' . $origin_project_id : '';
             echo '<div class="alert alert-info">No tasks found matching your criteria. <a href="#" data-bs-toggle="modal" data-bs-target="#taskModal" hx-get="' . BASE_URL . 'templates/task_form.php?action=add' . $add_link_params . '" hx-target="#taskFormContainer" hx-swap="innerHTML">Add one now!</a></div>';
